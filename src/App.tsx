@@ -56,11 +56,12 @@ function App() {
 
       const data: DownloadResponse = await response.json();
       
-      if (data.download_link) {
+      if (data.download_link && data.download_link.trim()) {
         setDownloadLink(data.download_link);
         setSuccess(true);
       } else {
-        setError('Failed to extract download link. Please try again.');
+        // More specific error for extraction failure
+        setError('Unable to extract download link from this Instagram post. This could be due to: the post being private, the content type not being supported, or temporary service issues. Please try with a different public post or try again later.');
       }
     } catch (err) {
       console.error('Download error:', err);
@@ -148,7 +149,7 @@ function App() {
                   disabled={isLoading}
                 />
                 <p className="text-sm text-gray-500 mt-2">
-                  Paste the URL of an Instagram post, reel, or IGTV video
+                  Paste the URL of a <strong>public</strong> Instagram post, reel, or IGTV video
                 </p>
               </div>
 
@@ -239,7 +240,7 @@ function App() {
             <div className="grid md:grid-cols-3 gap-6 text-sm text-gray-600">
               <div className="space-y-2">
                 <div className="w-8 h-8 bg-instagram-gradient rounded-full flex items-center justify-center text-white font-bold mx-auto">1</div>
-                <p>Copy the Instagram post, reel, or IGTV URL</p>
+                <p>Copy a <strong>public</strong> Instagram post, reel, or IGTV URL</p>
               </div>
               <div className="space-y-2">
                 <div className="w-8 h-8 bg-instagram-gradient rounded-full flex items-center justify-center text-white font-bold mx-auto">2</div>
@@ -256,9 +257,10 @@ function App() {
           <div className="mt-8 p-4 bg-gray-50 rounded-lg">
             <h3 className="text-sm font-medium text-gray-800 mb-2">Troubleshooting</h3>
             <div className="text-xs text-gray-600 space-y-1">
-              <p>• If you see connection errors, the n8n workflow may be inactive</p>
-              <p>• Check your internet connection if downloads fail</p>
-              <p>• Make sure the Instagram URL is public and accessible</p>
+              <p>• <strong>Extraction failed:</strong> Try with a different public Instagram post</p>
+              <p>• <strong>Private posts:</strong> Only public Instagram content can be downloaded</p>
+              <p>• <strong>Connection errors:</strong> The n8n workflow may be inactive</p>
+              <p>• <strong>Service issues:</strong> The third-party service may be temporarily unavailable</p>
               <p>• Try refreshing the page if issues persist</p>
             </div>
           </div>
