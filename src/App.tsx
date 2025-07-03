@@ -48,6 +48,9 @@ function App() {
       });
 
       if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('SERVICE_INACTIVE');
+        }
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
@@ -61,7 +64,18 @@ function App() {
       }
     } catch (err) {
       console.error('Download error:', err);
-      setError('Failed to process the Instagram URL. Please check your connection and try again.');
+      
+      if (err instanceof Error) {
+        if (err.message === 'SERVICE_INACTIVE') {
+          setError('The download service is currently inactive. Please contact the administrator to activate the n8n workflow, or try again later.');
+        } else if (err.message.includes('Failed to fetch') || err.name === 'TypeError') {
+          setError('Unable to connect to the download service. This may be due to network issues or the service being temporarily unavailable. Please check your internet connection and try again.');
+        } else {
+          setError('Failed to process the Instagram URL. Please try again in a few moments.');
+        }
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -105,6 +119,17 @@ function App() {
             </p>
           </div>
 
+          {/* Service Status Notice */}
+          <div className="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-start space-x-2">
+              <AlertCircleIcon className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+              <div className="text-sm text-blue-700">
+                <p className="font-medium mb-1">Service Information</p>
+                <p>This service requires an active n8n workflow. If you encounter connection errors, please ensure the workflow is activated in your n8n instance.</p>
+              </div>
+            </div>
+          </div>
+
           {/* Main Card */}
           <div className="card">
             <div className="space-y-6">
@@ -129,9 +154,12 @@ function App() {
 
               {/* Error Message */}
               {error && (
-                <div className="flex items-center space-x-2 p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <AlertCircleIcon className="w-5 h-5 text-red-500 flex-shrink-0" />
-                  <p className="text-red-700 text-sm">{error}</p>
+                <div className="flex items-start space-x-2 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <AlertCircleIcon className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                  <div className="text-red-700 text-sm">
+                    <p className="font-medium mb-1">Error</p>
+                    <p>{error}</p>
+                  </div>
                 </div>
               )}
 
@@ -221,6 +249,17 @@ function App() {
                 <div className="w-8 h-8 bg-instagram-gradient rounded-full flex items-center justify-center text-white font-bold mx-auto">3</div>
                 <p>Click "Get Download Link" and then download</p>
               </div>
+            </div>
+          </div>
+
+          {/* Troubleshooting */}
+          <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+            <h3 className="text-sm font-medium text-gray-800 mb-2">Troubleshooting</h3>
+            <div className="text-xs text-gray-600 space-y-1">
+              <p>• If you see connection errors, the n8n workflow may be inactive</p>
+              <p>• Check your internet connection if downloads fail</p>
+              <p>• Make sure the Instagram URL is public and accessible</p>
+              <p>• Try refreshing the page if issues persist</p>
             </div>
           </div>
         </div>
