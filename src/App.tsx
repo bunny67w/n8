@@ -35,8 +35,7 @@ function App() {
     setDownloadLink('');
 
     try {
-      // Replace with your actual n8n webhook URL
-      const webhookUrl = 'YOUR_N8N_WEBHOOK_URL/ig-download';
+      const webhookUrl = 'https://ciaszz.app.n8n.cloud/webhook-test/ig-download';
       
       const response = await fetch(webhookUrl, {
         method: 'POST',
@@ -223,13 +222,6 @@ function App() {
                 <p>Click "Get Download Link" and then download</p>
               </div>
             </div>
-          </div>
-
-          {/* Configuration Note */}
-          <div className="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p className="text-sm text-yellow-800">
-              <strong>Note:</strong> Make sure to replace <code className="bg-yellow-100 px-1 rounded">YOUR_N8N_WEBHOOK_URL</code> in the code with your actual n8n webhook URL to test the workflow.
-            </p>
           </div>
         </div>
       </div>
