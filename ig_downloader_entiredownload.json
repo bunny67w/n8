@@ -1,0 +1,103 @@
+{
+  "name": "Instagram Downloader via EntireDownload",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ig-download",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.entiredownload.com/system/action.php",
+        "method": "POST",
+        "responseFormat": "string",
+        "jsonParameters": false,
+        "options": {},
+        "bodyContentType": "form-urlencoded",
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "url",
+              "value": "={{ $json[\"link\"] }}"
+            },
+            {
+              "name": "action",
+              "value": "post"
+            },
+            {
+              "name": "token",
+              "value": "entiredownload"
+            }
+          ]
+        }
+      },
+      "id": "2",
+      "name": "Download from EntireDownload",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "html": "={{ $node[\"Download from EntireDownload\"].json }}",
+        "options": {},
+        "extractValues": {
+          "selectors": [
+            {
+              "key": "download_link",
+              "selector": "a[href*='cdninstagram.com']",
+              "attribute": "href"
+            }
+          ]
+        }
+      },
+      "id": "3",
+      "name": "Extract Link",
+      "type": "n8n-nodes-base.htmlExtract",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Download from EntireDownload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download from EntireDownload": {
+      "main": [
+        [
+          {
+            "node": "Extract Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false
+}
