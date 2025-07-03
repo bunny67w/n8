@@ -35,7 +35,7 @@ function App() {
     setDownloadLink('');
 
     try {
-      const webhookUrl = 'https://ciaszz.app.n8n.cloud/webhook-test/ig-download';
+      const webhookUrl = 'https://ciaszz.app.n8n.cloud/webhook/ig-download';
       
       const response = await fetch(webhookUrl, {
         method: 'POST',
